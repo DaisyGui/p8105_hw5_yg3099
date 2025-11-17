@@ -183,3 +183,20 @@ The raw dataset contains 52,179 observations, which are homicide cases from 50 m
 
 Each row represents one homicide and includes key variables like victim information including name, age, race and sex. Variables also include city, state, geographic coordinates, the report date, and the case disposition. 
 
+Next, a dataframe on cities in different stats, number of homicides, and the number of unsolved homicides is generated. 
+
+```{r}
+homicide_city = 
+  homicides_df |>
+  mutate(
+    city_state = str_c(city, ", ", state),
+    unsolved = disposition %in% c("Closed without arrest", "Open/No arrest")
+  ) |>
+  group_by(city_state) |>
+  summarize(
+    total = n(),
+    unsolved = sum(unsolved),
+    .groups = "drop"
+  )
+```
+
