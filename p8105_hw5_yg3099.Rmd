@@ -2,29 +2,47 @@
 title: "p8105_hw5_yg3099"
 author: "daisy_gui"
 date: "2025-11-16"
-output: html_document
+output: github_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+library(tidyverse)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## Problem 1
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+In this function, random birthdays can be created and tell if there are duplicated ones. 
 
-```{r cars}
-summary(cars)
+```{r}
+set.seed(1)
+
+birthday_dup = function(n_people, n_days = 365) {
+  birthdays = sample(1:n_days, size = n_people, replace = TRUE)
+  any(duplicated(birthdays))
+}
+
 ```
 
-## Including Plots
+Now, stimulate 10,000 times for sample size 2~50 and calculate the probability of occurring duplicated birthdays. Results are stored in sim_results_df. 
 
-You can also embed plots, for example:
+```{r}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+sim_results_df = 
+  expand_grid(
+    group_size = 2:50,
+    iter = 1:10000
+  ) |> 
+  mutate(
+    dup = map_lgl(group_size, birthday_dup)
+  ) |> 
+  group_by(group_size) |> 
+  summarize(
+    prob_dup = mean(dup)
+  )
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+
+```
+
