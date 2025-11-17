@@ -169,3 +169,6 @@ The sample average of $\hat{\mu}$ across the tests for which the null is rejecte
 Because including only cases which reject the null introduces selection bias.
 
 For positive means,  samples larger than average tend to be rejected, samples smaller tend not to be reject. So the subset with rejected h0 only samples subset contains a disproportionate number of high estimates of $\mu$ 
+
+## Problem 3
+
