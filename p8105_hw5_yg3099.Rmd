@@ -172,3 +172,14 @@ For positive means,  samples larger than average tend to be rejected, samples sm
 
 ## Problem 3
 
+Import data from csv. 
+```{r}
+homicides_df = read_csv("data/homicide-data.csv")
+
+homicides_df
+```
+
+The raw dataset contains 52,179 observations, which are homicide cases from 50 major U.S. cities. It contains 12 variables in total.
+
+Each row represents one homicide and includes key variables like victim information including name, age, race and sex. Variables also include city, state, geographic coordinates, the report date, and the case disposition. 
+
