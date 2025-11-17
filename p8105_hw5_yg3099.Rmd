@@ -4,26 +4,28 @@ author: "daisy_gui"
 date: "2025-11-16"
 output: github_document
 ---
+
 ```{r}
 library(tidyverse)
+library(broom)
 ```
-
 
 ## Problem 1
 
-In this function, random birthdays can be created and tell if there are duplicated ones. 
+In this function, random birthdays can be created and tell if there are duplicated ones.
 
 ```{r}
 set.seed(1)
 
 birthday_dup = function(n_people, n_days = 365) {
   birthdays = sample(1:n_days, size = n_people, replace = TRUE)
+  
   any(duplicated(birthdays))
 }
 
 ```
 
-Now, stimulate 10,000 times for sample size 2~50 and calculate the probability of occurring duplicated birthdays. Results are stored in sim_results_df. 
+Now, stimulate 10,000 times for sample size 2\~50 and calculate the probability of occurring duplicated birthdays. Results are stored in sim_results_df.
 
 ```{r}
 
@@ -41,7 +43,7 @@ sim_results_df =
   )
 ```
 
-The graph below shows the change in probability with group size from 2 to 50. 
+The graph below shows the change in probability with group size from 2 to 50.
 
 ```{r}
 sim_results_df |> 
@@ -56,5 +58,41 @@ sim_results_df |>
   )
 ```
 
-According to the plot, the probability of at least two people sharing a birthday increases rapidly as the group size grows from 2. When the group size is around 23-24, the probability rises to about 50%. The rate of increase then slow down when the group size increase. The probability reaches 97.20% at group size n = 50. Overall, the probability of at least two people sharing a birthday get closer and closer to 100% as the group size grows. 
+According to the plot, the probability of at least two people sharing a birthday increases rapidly as the group size grows from 2. When the group size is around 23-24, the probability rises to about 50%. The rate of increase then slow down when the group size increase. The probability reaches 97.20% at group size n = 50. Overall, the probability of at least two people sharing a birthday get closer and closer to 100% as the group size grows.
 
+## Problem 2
+
+First, a function is written to generate one random sample and return $\mu$ and p-value.
+
+```{r}
+sim_one_sample = function(n = 30, mu, sigma = 5) {
+  x = rnorm(n, mean = mu, sd = sigma)
+  
+  test_res = t.test(x, mu = 0) |> tidy()
+  
+  tibble(
+    mu_hat = mean(x),
+    p_value = test_res$p.value
+  )
+}
+
+```
+
+Then do 5,000 stimuations with the function.
+
+```{r}
+sim_results_df = 
+  expand_grid(
+    true_mu = 0:6,
+    iter = 1:5000
+  ) |> 
+  mutate(
+    estimate_df = map(true_mu, 
+                      \(m) sim_one_sample(mu = m))
+  ) |> 
+  unnest(estimate_df)
+```
+
+```{r}
+
+```
