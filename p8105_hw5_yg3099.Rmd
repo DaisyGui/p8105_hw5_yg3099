@@ -121,3 +121,51 @@ pw_df |>
 
 As the true value of $\mu$ increases, the power of the test increases first rapidly and then slower after true value of $\mu = 3$. This shows a strong positive association between effect size and power.
 
+
+For the plot with average estimate of $\hat{\mu}$ on the y axis and the true value of $\mu$ on the x axis, we need to first calculate average $\hat{\mu}$ of all samples: 
+
+```{r}
+avg_mu_df = 
+  t_result_df |> 
+  group_by(true_mu) |> 
+  summarize(avg_mu_hat = mean(mu_hat))
+
+```
+
+Next, calculate $\hat{\mu}$ of samples which h0 was rejected:
+
+```{r}
+avg_mu_reject_df = 
+  t_result_df |> 
+  filter(p_value < 0.05) |> 
+  group_by(true_mu) |> 
+  summarize(avg_mu_hat_reject = mean(mu_hat))
+```
+
+The graph below compares average $\hat{\mu}$ from all samples and samples which h0 get rejected with the change of true value of $\mu$.
+
+```{r}
+
+avg_mu_df|> 
+  left_join(avg_mu_reject_df, by = "true_mu") |> 
+  ggplot(aes(x = true_mu)) +
+  geom_line(aes(y =avg_mu_hat, color = "All samples")) +
+  geom_point(aes(y =avg_mu_hat, color = "All samples")) +
+  geom_line(aes(y =avg_mu_hat_reject, color = "Rejected only")) +
+  geom_point(aes(y =avg_mu_hat_reject, color = "Rejected only")) +
+  labs(
+    x = "True μ",
+    y = "Average μ̂",
+    title = "Comparison of μ̂: All samples vs Rejection-only"
+  ) + scale_color_manual(values = c(
+    "All samples" = "steelblue",
+    "Rejected only" = "tomato3"
+    ))
+
+```
+
+The sample average of $\hat{\mu}$ across the tests for which the null is rejected is not approximately equal to the true value of $\mu$ when the true $\mu$ value is small.They get more similar when the true $\mu$ value increase. 
+
+Because including only cases which reject the null introduces selection bias.
+
+For positive means,  samples larger than average tend to be rejected, samples smaller tend not to be reject. So the subset with rejected h0 only samples subset contains a disproportionate number of high estimates of $\mu$ 
