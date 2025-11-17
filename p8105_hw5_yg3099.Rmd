@@ -41,8 +41,20 @@ sim_results_df =
   )
 ```
 
+The graph below shows the change in probability with group size from 2 to 50. 
 
 ```{r}
-
+sim_results_df |> 
+  ggplot(aes(x = group_size, y = prob_dup)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 0.01)) +
+  labs(
+    x = "Group size",
+    y = "Probability of at least two share a birthday",
+    title = "Probability of shared a birthday with different group sizes"
+  )
 ```
+
+According to the plot, the probability of at least two people sharing a birthday increases rapidly as the group size grows from 2. When the group size is around 23-24, the probability rises to about 50%. The rate of increase then slow down when the group size increase. The probability reaches 97.20% at group size n = 50. Overall, the probability of at least two people sharing a birthday get closer and closer to 100% as the group size grows. 
 
