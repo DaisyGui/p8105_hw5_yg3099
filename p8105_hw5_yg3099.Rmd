@@ -217,3 +217,37 @@ baltimore_tidy |>
   select(estimate, conf.low, conf.high)
 ```
 
+We can also calculate proportion of unsolved homicides in other cities and the cofidential intervals. 
+
+```{r}
+all_city_unsolved =
+  homicide_city |>
+  mutate(
+    prop_test = map2(
+      unsolved, total,
+      \(x, n) broom::tidy(prop.test(x, n))
+    )
+  ) |>
+  unnest(prop_test)
+
+```
+
+A graph on unsolved proportion of homicides in different cities and their confidential intervals can be plotted. 
+
+```{r}
+all_city_unsolved |>
+  mutate(
+    city_state = fct_reorder(city_state, estimate)
+  ) |>
+  ggplot(aes(x = city_state, y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.1) +
+  coord_flip() +
+  labs(
+    x = "City",
+    y = "Estimated proportion unsolved",
+    title = "Proportion of unsolved homicides by city"
+  )
+
+```
+
